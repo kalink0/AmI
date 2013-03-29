@@ -1,4 +1,4 @@
-#SmartSenseo Control Center, Project in Ambient INtelligence, Controlling a Senseo Machine via Bluetooth
+#SmartSenseo Control Center, Project in Ambient Intelligence, Controlling a Senseo Machine via Bluetooth
 #Copyright (C) 2013  Marco Neumann, Nils Bürkner
 
 #This program is free software: you can redistribute it and/or modify
@@ -14,13 +14,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import XMLFileManager
+
 class ControlCenter (object) :
     def __init__(self) :
         self.__status = 0
         self.__rfid = 0
         self.__nameofchip = '';
         self.__numbersofchip = -1;
-        self.__btconnection = BluetoothConnection()
+        #self.__btconnection = BluetoothConnection()
+        self.__filemanager = XMLFileManager()
 
     def __del__(self) :
         #TODO Write into file
@@ -28,7 +31,7 @@ class ControlCenter (object) :
 
     def getStatus (self) :
         #TODO Call getStatusByte from btconnection
-        return self.status
+        return self.__status
 
     def fillCup (self, size) :
         #TODO call sendControlBYte and call getStatusBYte
