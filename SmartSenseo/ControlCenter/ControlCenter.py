@@ -1,5 +1,5 @@
 #SmartSenseo Control Center, Project in Ambient Intelligence, Controlling a Senseo Machine via Bluetooth
-#Copyright (C) 2013  Marco Neumann, Nils Bürkner
+#Copyright (C) 2013  Marco Neumann, Nils Buerkner
 
 #This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import XMLFileManager
+from XMLFileManager import XMLFileManager
 
 class ControlCenter (object) :
     def __init__(self) :

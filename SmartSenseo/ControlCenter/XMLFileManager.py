@@ -1,5 +1,5 @@
 #XMLFileManager.py, Project in Ambient Intelligence, Read and Write XMLFiles
-#Copyright (C) 2013  Marco Neumann, Nils Bürkner
+#Copyright (C) 2013  Marco Neumann, Nils Buerkner
 
 #This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -20,11 +20,21 @@ class XMLFileManager(object):
     def __init__ (self) :
         self.__filename = "cups.xml" #fix name in this project, there is no need for a changeable filename
 
-    def writeToFile (self) :
+    """Method to overwrite the values of exisiting chips or append a new chip with values"""
+    def writeToFile (self, rfid, nameofchip, numberofchip) :
         doc = ElementTree(file = self.__filename);
         
-
-    def readFromFile (self) :
+    """Method to search for the chip number, if chip number cannot be found, the returned id will be -1"""
+    def readFromFile (self, rfid) :
         doc = ElementTree(file = self.__filename);
-
+        root = doc.getroot()
+        for chips in root.getchildren():
+            chipid = int((chips.find("chip-id")).text)
+            name = (chips.find("name")).text
+            numbers = int((chips.find("numbers")).text)
+            if chipid == rfid :
+                chip_data = (chipid, name, numbers) #store the data in one tuple for return
+                return chip_data
+            chip_data = (-1, "", -1) # if id isn't found
+            return chip_data
 
