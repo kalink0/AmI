@@ -21,7 +21,7 @@ class XMLFileManager(object):
     def __init__ (self) :
         self.__filename = "cups.xml" #fix name in this project, there is no need for a changeable filename
 
-    """Method to overwrite the values of exisiting chips or append a new chip with values"""
+    """Method to overwrite the values of existing chips or append a new chip with values"""
     def writeToFile (self, rfid, nameofchip, numberofchip) :
         doc = ElementTree(file = self.__filename);
         root = doc.getroot()
