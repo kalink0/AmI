@@ -20,6 +20,24 @@ import socket
 class BluetoothConnection(object):
     
     def __init__(self, mac_address="F0:7B:CB:F2:5F:1C"):
-        self.socket = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-        self.socket.connect((mac_address, 1))
+        self.__socket = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+        self.__socket.connect((mac_address, 1))
+        self.__controlbyte = 0x00
+        self.__statusbyte =  [-1,-1,-1,-1,-1]
         
+    def __del__(self) :
+        self.__socket.close()
+        
+    def sendControlByte (self, control) :
+        self.__socket.send(control)
+        self.__socket.recv_into(self.__statusbyte, 5)
+        
+        
+    def getRFID (self) :
+        if not self.__statusbyte[4] ==  (self.__rfid >> 24 ) :
+            temp = [self.__statusbyte[1], self.__statusbyte[2], self.__statusbyte[3], self.__statusbyte[4]]
+            return int(''.join(map(str,temp)))
+        
+    def getStatusByte (self) :
+        self.sendControlByte(0x08)
+        return self.__statusbyte

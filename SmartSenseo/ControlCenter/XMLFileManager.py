@@ -56,5 +56,5 @@ class XMLFileManager(object):
                 chip_data = (chipid, name, numbers) #store the data in one tuple for return
                 return chip_data
             chip_data = (-1, "", -1) # if id isn't found
-            return chip_data
+        return chip_data
 

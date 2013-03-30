@@ -15,6 +15,7 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from XMLFileManager import XMLFileManager
+from BluetoothConnection import BluetoothConnection
 
 class ControlCenter (object) :
     def __init__(self) :
@@ -22,30 +23,37 @@ class ControlCenter (object) :
         self.__rfid = 0
         self.__nameofchip = '';
         self.__numbersofchip = -1;
-        #self.__btconnection = BluetoothConnection()
+        self.__btconnection = BluetoothConnection()
         self.__filemanager = XMLFileManager()
 
     def __del__(self) :
-        #TODO Write into file
-        #TODO Close Bluetooth connection
+        self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numberofchip)
+        self.__filemanager.__del__
+        self.__bconnection.__del__
 
     def getStatus (self) :
-        #TODO Call getStatusByte from btconnection
+        statusbyte = self.__btconnection.getStatusByte()
         return self.__status
 
     def fillCup (self, size) :
-        #TODO call sendControlBYte and call getStatusBYte
+        if size == 1 :
+            self.__btconnection.sendControlByte(0x0A)   #0000 1010
+        else :
+            self.__btconnection.sendControlByte(0x0C)   #0000 1100
+        #TODO Receiving and controlling of the bytes
         #TODO Exceptionhandling?
         #TODO return?
 
     def getRFIDNumberFromMachine (self) :
-        #TODO call getRFID
+        self.__rfid = self.__btconnection.getRFID()
+        return self__rfid
 
     def searchUsedRFID (self) :
-        #TODO Read from File
+        self.__filemanager.readFromFile(self.__rfid)
 
     def assignNameToRFID (self, name) :
         self.nameofchip = name
 
     def switchStatus (self) :
-        #TODO call sendControlByte
+        self.__btconnection.sendControlByte(0x09)
+        #TODO: Confirmation
