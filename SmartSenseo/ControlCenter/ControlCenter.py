@@ -19,34 +19,48 @@ from BluetoothConnection import BluetoothConnection
 
 class ControlCenter (object) :
     def __init__(self) :
-        self.__status = 0
+        self.__status = 0   # 2^0 = on/off, 2^1 = water, 2^2 = job, 2^3 = cup 
         self.__rfid = 0
-        self.__nameofchip = '';
-        self.__numbersofchip = -1;
+        self.__nameofchip = ''
+        self.__numbersofchip = -1
         self.__btconnection = BluetoothConnection()
         self.__filemanager = XMLFileManager()
+        self.__cupchanged = 0
 
     def __del__(self) :
         self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numberofchip)
         self.__filemanager.__del__
         self.__bconnection.__del__
 
+    '''method to get the status of the machine (on or off)'''
     def getStatus (self) :
         statusbyte = self.__btconnection.getStatusByte()
+        self.__status = statusbyte[0] & 0xFF
+        #TODO: return text with status message (e.g. "no water in machine")
         return self.__status
 
     def fillCup (self, size) :
-        if size == 1 :
-            self.__btconnection.sendControlByte(0x0A)   #0000 1010
-        else :
-            self.__btconnection.sendControlByte(0x0C)   #0000 1100
-        #TODO Receiving and controlling of the bytes
-        #TODO Exceptionhandling?
-        #TODO return?
+        if ((self.__status & 0xff) == 0x0B) and (self.__cupchanged == 1) :
+            if size == 1 :
+                self.__btconnection.sendControlByte(0x0A)   #0000 1010
+            else :
+                self.__btconnection.sendControlByte(0x0C)   #0000 1100
+            self.__numbersofchip += 1
+            while 1 :   # waiting for finishing the job
+                if (self.getStatus() & 0x04) == 0 :
+                    break
 
+        #TODO: Exceptionhandling?
+        #TODO: return?
+
+    '''get RFIDNumber of the cup in the Machine'''
     def getRFIDNumberFromMachine (self) :
-        self.__rfid = self.__btconnection.getRFID()
-        return self__rfid
+        self.__cupchanged = 0
+        temp_rfid = self.__btconnection.getRFID()
+        if not temp_rfid == self.__rfid :   #if cup has changed, write the old data into the xml file
+            self.__filemanager.writeToFile(self.__rfid, self.__nameofchip, self.__numberofchip);
+            self.__cupchanged = 1
+        return self.__rfid
 
     def searchUsedRFID (self) :
         self.__filemanager.readFromFile(self.__rfid)

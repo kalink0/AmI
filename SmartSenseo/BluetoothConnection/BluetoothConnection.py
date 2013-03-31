@@ -34,9 +34,10 @@ class BluetoothConnection(object):
         
         
     def getRFID (self) :
-        if not self.__statusbyte[4] ==  (self.__rfid >> 24 ) :
+        self.getStatusByte()
+        if not self.__statusbyte[4] ==  (self.__rfid >> 24 ) :  #Vergleich ob neue Tasse drunter steht
             temp = [self.__statusbyte[1], self.__statusbyte[2], self.__statusbyte[3], self.__statusbyte[4]]
-            return int(''.join(map(str,temp)))
+        return int(''.join(map(str,temp)))
         
     def getStatusByte (self) :
         self.sendControlByte(0x08)
