@@ -24,9 +24,11 @@ class BluetoothConnection(object):
         self.__socket.connect((mac_address, 1))
         self.__controlbyte = 0x00
         self.__statusbyte =  [-1,-1,-1,-1,-1]
+        pass
         
     def __del__(self) :
         self.__socket.close()
+        pass
         
     def sendControlByte (self, control) :
         self.__socket.send(control)
