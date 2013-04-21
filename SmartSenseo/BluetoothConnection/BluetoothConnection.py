@@ -23,10 +23,16 @@ class BluetoothConnection(object):
         self.__socket = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
         self.__socket.connect((mac_address, 1))
         self.__controlbyte = 0x00
+<<<<<<< HEAD
         self.__statusbyte = bytearray(b"00000")
+=======
+        self.__statusbyte =  [-1,-1,-1,-1,-1]
+        pass
+>>>>>>> 8a33ed965869926ec6996bf6d084797475c61640
         
     def __del__(self) :
         self.__socket.close()
+        pass
         
     def sendControlByte (self, control) :
         self.__socket.send(str(control).encode(encoding='utf_8'))
