@@ -19,17 +19,17 @@ import socket
 
 class BluetoothConnection(object):
     
-    def __init__(self, mac_address="F0:7B:CB:F2:5F:1C"):
+    def __init__(self, mac_address="00:02:72:b1:9e:e0"):
         self.__socket = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
         self.__socket.connect((mac_address, 1))
         self.__controlbyte = 0x00
-        self.__statusbyte =  [-1,-1,-1,-1,-1]
+        self.__statusbyte = bytearray(b"00000")
         
     def __del__(self) :
         self.__socket.close()
         
     def sendControlByte (self, control) :
-        self.__socket.send(control)
+        self.__socket.send(str(control).encode(encoding='utf_8'))
         self.__socket.recv_into(self.__statusbyte, 5)
         
         
@@ -40,5 +40,5 @@ class BluetoothConnection(object):
         return int(''.join(map(str,temp)))
         
     def getStatusByte (self) :
-        self.sendControlByte(0x08)
+        self.sendControlByte("8".encode(encoding='utf_8', errors='strict'))
         return self.__statusbyte

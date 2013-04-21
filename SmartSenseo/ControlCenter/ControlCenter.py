@@ -23,12 +23,12 @@ class ControlCenter (object) :
         self.__rfid = 0
         self.__nameofchip = ''
         self.__numbersofchip = -1
-        self.__btconnection = BluetoothConnection()
-        self.__filemanager = XMLFileManager()
+        self.__btconnection = BluetoothConnection.BluetoothConnection()
+        self.__filemanager = XMLFileManager.XMLFileManager()
         self.__cupchanged = 0
 
     def __del__(self) :
-        self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numberofchip)
+        self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numbersofchip)
         self.__filemanager.__del__
         self.__bconnection.__del__
 
