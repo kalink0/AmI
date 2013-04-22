@@ -14,8 +14,8 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import XMLFileManager as fm
-from BluetoothConnection import BluetoothConnection as bt
+from XMLFileManager import XMLFileManager
+from BluetoothConnection import BluetoothConnection
 
 class ControlCenter (object) :
     def __init__(self) :
@@ -23,7 +23,7 @@ class ControlCenter (object) :
         self.__rfid = 0
         self.__nameofchip = ''
         self.__numbersofchip = -1
-<<<<<<< HEAD
+
         self.__btconnection = BluetoothConnection.BluetoothConnection()
         self.__filemanager = XMLFileManager.XMLFileManager()
         self.__cupchanged = 0
@@ -31,20 +31,9 @@ class ControlCenter (object) :
     def __del__(self) :
         self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numbersofchip)
         self.__filemanager.__del__
-        self.__bconnection.__del__
+        self.__btconnection.__del__
 
-=======
-        self.__btconnection = bt.BluetoothConnection()
-        self.__filemanager = fm.XMLFileManager()
-        self.__cupchanged = 0
 
-    def __del__(self) :
-        if not self.__rfid == 0 :
-            self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numbersofchip)
-        del self.__filemanager
-        del self.__btconnection
-        
->>>>>>> 8a33ed965869926ec6996bf6d084797475c61640
     '''method to get the status of the machine (on or off)'''
     def getStatus (self) :
         statusbyte = self.__btconnection.getStatusByte()
