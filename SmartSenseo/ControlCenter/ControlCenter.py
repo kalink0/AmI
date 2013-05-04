@@ -15,7 +15,7 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from XMLFileManager import XMLFileManager
-from BluetoothConnection import BluetoothConnection
+from SerialConnection import SerialConnection
 
 class ControlCenter (object) :
     def __init__(self) :
@@ -24,19 +24,19 @@ class ControlCenter (object) :
         self.__nameofchip = ''
         self.__numbersofchip = -1
 
-        self.__btconnection = BluetoothConnection.BluetoothConnection()
+        self.__serialconnection = SerialConnection.SerialConnection()
         self.__filemanager = XMLFileManager.XMLFileManager()
         self.__cupchanged = 0
 
     def __del__(self) :
         self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numbersofchip)
         self.__filemanager.__del__
-        self.__btconnection.__del__
+        self.__serialconnection.__del__
 
 
     '''method to get the status of the machine (on or off)'''
     def getStatus (self) :
-        statusbyte = self.__btconnection.getStatusByte()
+        statusbyte = self.__serialconnection.getStatusByte()
         self.__status = statusbyte[0] & 0xFF
         #TODO: return text with status message (e.g. "no water in machine")
         return self.__status
@@ -44,9 +44,9 @@ class ControlCenter (object) :
     def fillCup (self, size) :
         if ((self.__status & 0xff) == 0x0B) and (self.__cupchanged == 1) :
             if size == 1 :
-                self.__btconnection.sendControlByte(0x0A)   #0000 1010
+                self.__serialconnection.sendControlByte(0x0A)   #0000 1010
             else :
-                self.__btconnection.sendControlByte(0x0C)   #0000 1100
+                self.__serialconnection.sendControlByte(0x0C)   #0000 1100
             self.__numbersofchip += 1
             while 1 :   # waiting for finishing the job
                 if (self.getStatus() & 0x04) == 0 :
@@ -58,7 +58,7 @@ class ControlCenter (object) :
     '''get RFIDNumber of the cup in the Machine'''
     def getRFIDNumberFromMachine (self) :
         self.__cupchanged = 0
-        temp_rfid = self.__btconnection.getRFID()
+        temp_rfid = self.__serialconnection.getRFID()
         if not temp_rfid == self.__rfid :   #if cup has changed, write the old data into the xml file
             self.__filemanager.writeToFile(self.__rfid, self.__nameofchip, self.__numberofchip);
             self.__cupchanged = 1
@@ -71,5 +71,5 @@ class ControlCenter (object) :
         self.nameofchip = name
 
     def switchStatus (self) :
-        self.__btconnection.sendControlByte(0x09)
+        self.__serialconnection.sendControlByte(0x09)
         #TODO: Confirmation
