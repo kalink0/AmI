@@ -32,8 +32,7 @@ class SerialConnection(object):
     def sendControlByte (self, control) :
         print(self.__statusbyte[0])
         self.__portout.write(control)
-        #self.__statusbyte = self.__portin.read(5)
-        print(self.__statusbyte[0])
+        self.__statusbyte = self.__portin.read(5)
         
     def getRFID (self) :
         self.getStatusByte()
