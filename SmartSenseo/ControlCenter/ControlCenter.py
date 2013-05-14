@@ -37,12 +37,11 @@ class ControlCenter (object) :
     '''method to get the status of the machine (on or off)'''
     def getStatus (self) :
         statusbyte = self.__serialconnection.getStatusByte()
-        self.__status = statusbyte[0] & 0xFF
-        #TODO: return text with status message (e.g. "no water in machine")
+        self.__status = int (statusbyte[0]) & 0x0F
         return self.__status
 
     def fillCup (self, size) :
-        if ((self.__status & 0xff) == 0x0B) and (self.__cupchanged == 1) :
+        if ((self.__status & 0xff) == 0x0B) :
             if size == 1 :
                 self.__serialconnection.sendControlByte(0x0A)   #0000 1010
             else :
@@ -51,25 +50,28 @@ class ControlCenter (object) :
             while 1 :   # waiting for finishing the job
                 if (self.getStatus() & 0x04) == 0 :
                     break
-
-        #TODO: Exceptionhandling?
-        #TODO: return?
+            print "Job finished, enjoy your coffee!"
 
     '''get RFIDNumber of the cup in the Machine'''
     def getRFIDNumberFromMachine (self) :
         self.__cupchanged = 0
         temp_rfid = self.__serialconnection.getRFID()
-        if not temp_rfid == self.__rfid :   #if cup has changed, write the old data into the xml file
+        if temp_rfid != self.__rfid and self.__rfid != 0:   #if cup has changed, write the old data into the xml file
             self.__filemanager.writeToFile(self.__rfid, self.__nameofchip, self.__numberofchip);
             self.__cupchanged = 1
+        self.__rfid = temp_rfid
         return self.__rfid
 
     def searchUsedRFID (self) :
-        self.__filemanager.readFromFile(self.__rfid)
-
+        chipData = self.__filemanager.readFromFile(self.__rfid)
+        if chipData.chipid != -1 :
+            self.__nameofchip = chipData.name
+            self.__numbersofchip = chipData.numbers
+        else :
+            self.__nameofchip = input ("The cup is unknown, please enter a name for it: ")    
+            
     def assignNameToRFID (self, name) :
-        self.nameofchip = name
+        self.__nameofchip = name
 
     def switchStatus (self) :
         self.__serialconnection.sendControlByte(0x09)
-        #TODO: Confirmation

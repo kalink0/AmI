@@ -22,22 +22,20 @@ class SerialConnection(object):
 
     def __init__(self):
         self.__portin = serial.Serial('COM6', 9600, timeout = 5)
-        self.__portout = serial.Serial('COM3', 9600)
+        #self.__portout = serial.Serial('COM2', 9600)
         self.__statusbyte = array.array('B', [0xff,0xff,0xff,0xff,0xff])
 
     def __del__(self) :
-        self.__portout.close()
+        #self.__portout.close()
         self.__portin.close()
         
     def sendControlByte (self, control) :
-        print(self.__statusbyte[0])
-        self.__portout.write(control)
+        self.__portin.write(control)
         self.__statusbyte = self.__portin.read(5)
         
     def getRFID (self) :
         self.getStatusByte()
-        if not self.__statusbyte[4] ==  (self.__rfid >> 24 ) :  #compare if new cup is in senseo
-            temp = [self.__statusbyte[1], self.__statusbyte[2], self.__statusbyte[3], self.__statusbyte[4]]
+        temp = [self.__statusbyte[1], self.__statusbyte[2], self.__statusbyte[3], self.__statusbyte[4]]
         return int(''.join(map(str,temp)))
         
     def getStatusByte (self) :
