@@ -53,7 +53,16 @@ if __name__ == '__main__':
             print " Okay, I will shutdown the machine now for you"
             control.switchStatus()
             continue
-        
+ 
+        #User wants to start a job, but there is an active job
+        if (currentstatus & 0x04) == 1 and (controlbyte & 0x06) != 0 :
+            print "Cannot start a job, the machine is busy!"
+            print " I will wait until the job is finished"
+            while (control.getStatus() & 0x04) != 0 :
+                pass
+            print " Okay, now i will start with your coffee"
+            control.switchStatus()
+            continue       
         #User wants to start a job, but there is no water in the machine
         if (currentstatus & 0x02) != 0x02 and (controlbyte & 0x06) != 0 :
             print "Sorry, I cannot start your job, there is no water in the machine"
