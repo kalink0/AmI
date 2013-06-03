@@ -44,6 +44,12 @@ if __name__ == '__main__':
             print "Please switch on the Machine with 1"
             continue
         
+        #Machine is offline and user wants to start it
+        if (currentstatus & 0x01) == 0 and (controlbyte & 0x01) == 1 :
+            print "Starting the machine"
+            control.switchStatus()
+            continue
+        
         #User wants to shutdown the machine, but there is an active job
         if (currentstatus & 0x04) == 1 and (controlbyte & 0x01) == 1 :
             print "Cannot shutdown the machine, a job is running"
@@ -69,15 +75,15 @@ if __name__ == '__main__':
             continue
         
         #User wants to start a job, but there is no cup recognized
-        if (currentstatus & 0x08) != 0x08 and (controlbyte & 0x06) != 0 :
+        ''''if (currentstatus & 0x08) != 0x08 and (controlbyte & 0x06) != 0 :
             print "Sorry, I cannot start your job, there is no cup in the machine"
             continue
         else :
             rfidnumber = control.getRFIDNumberFromMachine()
             control.searchUsedRFID()
-        
-        rfidnumber = control.getRFIDNumberFromMachine()
-        control.searchUsedRFID()
+        '''
+        #rfidnumber = control.getRFIDNumberFromMachine()
+        #control.searchUsedRFID()
         if controlbyte == 0x04 :
             control.fillCup(2)
             continue

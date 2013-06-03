@@ -14,8 +14,9 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from XMLFileManager import XMLFileManager
+#from XMLFileManager import XMLFileManager
 from SerialConnection import SerialConnection
+import struct
 
 class ControlCenter (object) :
     def __init__(self) :
@@ -25,19 +26,19 @@ class ControlCenter (object) :
         self.__numbersofchip = -1
 
         self.__serialconnection = SerialConnection.SerialConnection()
-        self.__filemanager = XMLFileManager.XMLFileManager()
+        #self.__filemanager = XMLFileManager.XMLFileManager()
         self.__cupchanged = 0
 
     def __del__(self) :
-        self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numbersofchip)
-        self.__filemanager.__del__
+        #self.__filemanager.writeToFile (self.__rfid, self.__nameofchip, self.__numbersofchip)
+        #self.__filemanager.__del__
         self.__serialconnection.__del__
 
 
     '''method to get the status of the machine (on or off)'''
     def getStatus (self) :
         statusbyte = self.__serialconnection.getStatusByte()
-        self.__status = int (statusbyte[0]) & 0x0F
+        self.__status = struct.unpack("B", statusbyte[0])[0]  & 0x0F
         return self.__status
 
     def fillCup (self, size) :

@@ -21,17 +21,15 @@ import array
 class SerialConnection(object):
 
     def __init__(self):
-        self.__portin = serial.Serial('COM6', 9600, timeout = 5)
-        #self.__portout = serial.Serial('COM2', 9600)
+        self.__port = serial.Serial('COM6', 9600, timeout = 5)
         self.__statusbyte = array.array('B', [0xff,0xff,0xff,0xff,0xff])
 
     def __del__(self) :
-        #self.__portout.close()
-        self.__portin.close()
+        self.__port.close()
         
     def sendControlByte (self, control) :
-        self.__portin.write(control)
-        self.__statusbyte = self.__portin.read(5)
+        self.__port.write(chr(control))
+        self.__statusbyte = self.__port.read(5)
         
     def getRFID (self) :
         self.getStatusByte()
