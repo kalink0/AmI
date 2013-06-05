@@ -16,12 +16,12 @@ if __name__ == '__main__':
     
     print "Current status: "
     currentstatus = control.getStatus()
-    if (currentstatus & 0x01) == 0 :
-        print "Machine is offline"
+    if (currentstatus & 0x01) == 0x00 :
+        print "Machine is offline"  
     elif currentstatus == 1 :
         print "Machine is online, no water, no cup"
     elif currentstatus == 0x03 :
-        print "Machine is online, no cup"
+        print "Machine is online, let's start"
     elif currentstatus == 0x09 :
         print "Machine is online, no water" 
     elif currentstatus == 0x0B :
@@ -48,6 +48,9 @@ if __name__ == '__main__':
         if (currentstatus & 0x01) == 0 and (controlbyte & 0x01) == 1 :
             print "Starting the machine"
             control.switchStatus()
+            while (control.getStatus() & 0x01 != 1 ) :
+                pass
+            print "Machine is now online"
             continue
         
         #User wants to shutdown the machine, but there is an active job
@@ -67,7 +70,7 @@ if __name__ == '__main__':
             while (control.getStatus() & 0x04) != 0 :
                 pass
             print " Okay, now i will start with your coffee"
-            control.switchStatus()
+            #control.switchStatus()
             continue       
         #User wants to start a job, but there is no water in the machine
         if (currentstatus & 0x02) != 0x02 and (controlbyte & 0x06) != 0 :
@@ -84,10 +87,20 @@ if __name__ == '__main__':
         '''
         #rfidnumber = control.getRFIDNumberFromMachine()
         #control.searchUsedRFID()
+        if controlbyte == 0x01 :
+            print "I shut down the machine"
+            control.switchStatus();
+            while (control.getStatus() & 0x01 != 0 ) :
+                pass
+            print "Machine is now offline"
+            continue
+        
         if controlbyte == 0x04 :
+            print "I make a tall cup for you"
             control.fillCup(2)
             continue
-        else :
+        elif controlbyte == 0x02 :
+            print "I make a small cup you"
             control.fillCup(1)
             continue
     

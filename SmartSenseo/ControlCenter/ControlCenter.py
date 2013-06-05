@@ -21,7 +21,7 @@ import struct
 class ControlCenter (object) :
     def __init__(self) :
         self.__status = 0   # 2^0 = on/off, 2^1 = water, 2^2 = job, 2^3 = cup 
-        self.__rfid = 0
+        self.rfid = 0
         self.__nameofchip = ''
         self.__numbersofchip = -1
 
@@ -42,16 +42,16 @@ class ControlCenter (object) :
         return self.__status
 
     def fillCup (self, size) :
-        if ((self.__status & 0xff) == 0x0B) :
-            if size == 1 :
-                self.__serialconnection.sendControlByte(0x0A)   #0000 1010
-            else :
-                self.__serialconnection.sendControlByte(0x0C)   #0000 1100
-            self.__numbersofchip += 1
-            while 1 :   # waiting for finishing the job
-                if (self.getStatus() & 0x04) == 0 :
-                    break
-            print "Job finished, enjoy your coffee!"
+        #if ((self.__status & 0xff) == 0x0B) :
+        if size == 1 :
+            self.__serialconnection.sendControlByte(0x0A)   #0000 1010
+        else :
+            self.__serialconnection.sendControlByte(0x0C)   #0000 1100
+        self.__numbersofchip += 1
+        while 1 :   # waiting for finishing the job
+            if (self.getStatus() & 0x04) == 0 :
+                break
+        print "Job finished, enjoy your coffee!"
 
     '''get RFIDNumber of the cup in the Machine'''
     def getRFIDNumberFromMachine (self) :
