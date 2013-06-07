@@ -1,0 +1,2 @@
+Dependencies for Project 'smart_senseo', Target 'Target 1': (DO NOT MODIFY !)
+F (.\Startup.s)(0x5087BC1E)(--cpu Cortex-M4.fp -g --apcs=interwork -I C:\Keil\ARM\RV31\INC -I C:\Keil\ARM\CMSIS\Include -I C:\Keil\ARM\Inc\Luminary --list "Startup.lst" --xref -o "Startup.o" --depend "Startup.d")
